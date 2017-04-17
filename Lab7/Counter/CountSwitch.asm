@@ -1,0 +1,23 @@
+;Assume a switch is connected to P3.5. Write a program to display the number of times the switch is pressed on a 7 segment on P0, using a counter.
+
+ORG 00H				;TMOD - (GATE,C/T,M1,M0)(GATE,C/T,M1,M0)
+SJMP MAIN			;	TIMER 1		TIMER 0
+
+MYDATA: DB 3FH,06H,5BH,4FH,66H,6DH,7DH,07H,7FH,6FH,77H,7CH,39H,5EH,79H,71H
+
+ORG 50H
+MAIN:	MOV TMOD, #50H	;0101 0000B	TIMER 1, MODE 1	16 BIT COUNTER MODE
+	MOV TL1,#00H
+	MOV TH1,#00H
+	MOV DPTR,#MYDATA
+
+	SETB TR1
+
+BACK:	MOV A,TL1
+	MOVC A,@A+DPTR
+	CPL A
+	MOV P0,A
+	CPL A
+CJNE A,#0FH,BACK
+SJMP MAIN
+END 
